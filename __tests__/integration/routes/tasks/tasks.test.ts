@@ -47,12 +47,14 @@ describe('POST /api/tasks', () => {
     });
 
     expect(response.status).toBe(CREATED_CODE);
-    if (response.status === CREATED_CODE) {
-      const body = await response.json();
-      expect(body.name).toBe('Write first TDD test');
-      expect(body.done).toBe(false);
-      expect(body.id).toBeTypeOf('number');
+    if (response.status !== CREATED_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body.name).toBe('Write first TDD test');
+    expect(body.done).toBe(false);
+    expect(body.id).toBeTypeOf('number');
   });
 
   it('persists the inserted task to the database', async () => {
@@ -87,11 +89,13 @@ describe('POST /api/tasks', () => {
     });
 
     expect(response.status).toBe(UNPROCESSABLE_ENTITY_CODE);
-    if (response.status === UNPROCESSABLE_ENTITY_CODE) {
-      const body = await response.json();
-      expect(body).toHaveProperty('message', 'Validation failed');
-      expect(body).toHaveProperty('errors');
+    if (response.status !== UNPROCESSABLE_ENTITY_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toHaveProperty('message', 'Validation failed');
+    expect(body).toHaveProperty('errors');
   });
 
   it('returns 422 when name exceeds 255 characters', async () => {
@@ -112,10 +116,12 @@ describe('GET /api/tasks', () => {
     const response = await client.api.tasks.$get();
 
     expect(response.status).toBe(OK_CODE);
-    if (response.status === OK_CODE) {
-      const body = await response.json();
-      expect(body).toEqual([]);
+    if (response.status !== OK_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toEqual([]);
   });
 
   it('returns all seeded tasks', async () => {
@@ -126,14 +132,16 @@ describe('GET /api/tasks', () => {
     const response = await client.api.tasks.$get();
 
     expect(response.status).toBe(OK_CODE);
-    if (response.status === OK_CODE) {
-      const body = await response.json();
-      expect(body).toHaveLength(2);
-      expect(body.map((task) => task.name).sort((a, b) => a.localeCompare(b))).toEqual([
-        'Task A',
-        'Task B'
-      ]);
+    if (response.status !== OK_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toHaveLength(2);
+    expect(body.map((task) => task.name).sort((a, b) => a.localeCompare(b))).toEqual([
+      'Task A',
+      'Task B'
+    ]);
   });
 });
 
@@ -147,10 +155,12 @@ describe('GET /api/tasks/:id', () => {
     });
 
     expect(response.status).toBe(OK_CODE);
-    if (response.status === OK_CODE) {
-      const body = await response.json();
-      expect(body).toMatchObject({ id: seeded!.id, name: 'Findable task' });
+    if (response.status !== OK_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toMatchObject({ id: seeded!.id, name: 'Findable task' });
   });
 
   it('returns 404 when the task does not exist', async () => {
@@ -161,10 +171,12 @@ describe('GET /api/tasks/:id', () => {
     });
 
     expect(response.status).toBe(NOT_FOUND_CODE);
-    if (response.status === NOT_FOUND_CODE) {
-      const body = await response.json();
-      expect(body).toEqual({ message: NOT_FOUND_PHRASE });
+    if (response.status !== NOT_FOUND_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toEqual({ message: NOT_FOUND_PHRASE });
   });
 
   it('returns 422 when id is not a valid number', async () => {
@@ -189,10 +201,12 @@ describe('PATCH /api/tasks/:id', () => {
     });
 
     expect(response.status).toBe(OK_CODE);
-    if (response.status === OK_CODE) {
-      const body = await response.json();
-      expect(body).toMatchObject({ id: seeded!.id, name: 'Updated name', done: false });
+    if (response.status !== OK_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toMatchObject({ id: seeded!.id, name: 'Updated name', done: false });
   });
 
   it('supports partial updates (only done)', async () => {
@@ -205,10 +219,12 @@ describe('PATCH /api/tasks/:id', () => {
     });
 
     expect(response.status).toBe(OK_CODE);
-    if (response.status === OK_CODE) {
-      const body = await response.json();
-      expect(body).toMatchObject({ name: 'Keep the name', done: true });
+    if (response.status !== OK_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toMatchObject({ name: 'Keep the name', done: true });
   });
 
   it('persists the update to the database', async () => {
@@ -254,10 +270,12 @@ describe('PATCH /api/tasks/:id', () => {
     });
 
     expect(response.status).toBe(UNPROCESSABLE_ENTITY_CODE);
-    if (response.status === UNPROCESSABLE_ENTITY_CODE) {
-      const body = await response.json();
-      expect(body).toHaveProperty('message', UNPROCESSABLE_ENTITY_PHRASE);
+    if (response.status !== UNPROCESSABLE_ENTITY_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toHaveProperty('message', UNPROCESSABLE_ENTITY_PHRASE);
   });
 
   it('returns 404 when the task does not exist', async () => {
@@ -281,11 +299,13 @@ describe('PATCH /api/tasks/:id', () => {
     });
 
     expect(response.status).toBe(UNPROCESSABLE_ENTITY_CODE);
-    if (response.status === UNPROCESSABLE_ENTITY_CODE) {
-      const body = await response.json();
-      expect(body).toHaveProperty('message', 'Validation failed');
-      expect(body).toHaveProperty('errors');
+    if (response.status !== UNPROCESSABLE_ENTITY_CODE) {
+      return;
     }
+
+    const body = await response.json();
+    expect(body).toHaveProperty('message', 'Validation failed');
+    expect(body).toHaveProperty('errors');
   });
 
   it('returns 422 when name exceeds 255 characters', async () => {

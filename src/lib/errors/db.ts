@@ -68,11 +68,9 @@ export default class DatabaseError extends Error {
       return CONFLICT_CODE;
     }
 
-    if (code && Object.hasOwn(DB_UNPROCESSABLE_ENTITY_ERROR_MAP, code)) {
-      return UNPROCESSABLE_ENTITY_CODE;
-    }
-
-    return INTERNAL_SERVER_ERROR_CODE;
+    return code && Object.hasOwn(DB_UNPROCESSABLE_ENTITY_ERROR_MAP, code)
+      ? UNPROCESSABLE_ENTITY_CODE
+      : INTERNAL_SERVER_ERROR_CODE;
   }
 
   private static extractErrorCode(error: unknown) {

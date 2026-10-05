@@ -23,11 +23,9 @@ const vitest = (fileNames: string[]) => {
     })
     .filter((testFile) => fs.existsSync(testFile));
 
-  if (testFiles.length === 0) {
-    return [];
-  }
-
-  return [`vitest run ${testFiles.map((f) => path.normalize(f)).join(' ')}`];
+  return testFiles.length === 0
+    ? []
+    : [`vitest run ${testFiles.map((f) => path.normalize(f)).join(' ')}`];
 };
 
 const config = {
